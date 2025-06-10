@@ -1,12 +1,10 @@
-import dotenv from 'dotenv';
-import { initMongoConnection } from './db/initMongoConnection.js'; // Зверніть увагу на .js
-import { setupServer } from './server.js'; // Зверніть увагу на .js
+import 'dotenv/config';
+import { setupServer } from './server.js';
+import { initMongoConnection } from '../src/db/initMongoConnection.js';
 
-dotenv.config();
-
-async function bootstrap() {
+const bootstrap = async () => {
   await initMongoConnection();
   setupServer();
-}
+};
 
 bootstrap();
