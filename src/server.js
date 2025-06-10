@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import { contactsRouter } from './routes/contactsRouter.js'; // Зверніть увагу на додавання .js
+import { contactsRouter } from './routes/contactsRouter.js';
 
 function setupServer() {
   const app = express();
 
+  app.use(express.json()); // Цей рядок дуже важливий!
   app.use(cors());
   app.use(pino());
 
@@ -23,4 +24,4 @@ function setupServer() {
   });
 }
 
-export { setupServer }; // Змінено з module.exports
+export { setupServer };
