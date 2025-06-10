@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const pino = require('pino-http');
-const { contactsRouter } = require('./routes/contactsRouter');
+import express from 'express';
+import cors from 'cors';
+import pino from 'pino-http';
+import { contactsRouter } from './routes/contactsRouter.js'; // Зверніть увагу на додавання .js
 
 function setupServer() {
   const app = express();
@@ -23,5 +23,4 @@ function setupServer() {
   });
 }
 
-
-module.exports = { setupServer };
+export { setupServer }; // Змінено з module.exports
