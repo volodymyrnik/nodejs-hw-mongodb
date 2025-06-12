@@ -3,33 +3,32 @@ import { Contact } from '../models/contacts.js'; // Імпортуємо мод�
 // Функція для отримання всіх контактів
 export const getAllContacts = async (req, res, next) => {
   try {
-    const contacts = await Contact.find(); // Знайти всі контакти в базі даних
+    const contacts = await Contact.find();
     res.status(200).json({
-      status: 'success',
+      status: 200,
       message: 'Successfully found contacts',
       data: contacts,
     });
   } catch (error) {
-    next(error); // Передаємо помилку до обробника помилок Express
+    next(error);
   }
 };
 
 // Функція для отримання контакту за ID
 export const getContactById = async (req, res, next) => {
   try {
-    const { id } = req.params; // Отримуємо ID з параметрів запиту
-    const contact = await Contact.findById(id); // Знайти контакт за ID
+    const { id } = req.params;
+    const contact = await Contact.findById(id);
 
     if (!contact) {
-      // Якщо контакт не знайдено
       return res.status(404).json({
-        status: 'error',
+        status: 404,
         message: 'Contact not found',
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: 200,
       message: 'Successfully found contact',
       data: contact,
     });
@@ -41,9 +40,9 @@ export const getContactById = async (req, res, next) => {
 // Функція для створення нового контакту
 export const createContact = async (req, res, next) => {
   try {
-    const newContact = await Contact.create(req.body); // Створити новий контакт з даних запиту
-    res.status(201).json({ // 201 Created
-      status: 'success',
+    const newContact = await Contact.create(req.body);
+    res.status(201).json({
+      status: 201,
       message: 'Successfully created contact',
       data: newContact,
     });
@@ -56,17 +55,17 @@ export const createContact = async (req, res, next) => {
 export const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedContact = await Contact.findByIdAndUpdate(id, req.body, { new: true }); // Оновити та повернути оновлений об'єкт
+    const updatedContact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!updatedContact) {
       return res.status(404).json({
-        status: 'error',
+        status: 404,
         message: 'Contact not found',
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: 200,
       message: 'Successfully updated contact',
       data: updatedContact,
     });
@@ -79,17 +78,17 @@ export const updateContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedContact = await Contact.findByIdAndDelete(id); // Видалити та повернути видалений об'єкт
+    const deletedContact = await Contact.findByIdAndDelete(id);
 
     if (!deletedContact) {
       return res.status(404).json({
-        status: 'error',
+        status: 404,
         message: 'Contact not found',
       });
     }
 
-    // 204 No Content - зазвичай для успішного видалення
-    res.status(204).send(); // Відправляємо порожню відповідь
+    // Відправляємо 204 без статусу в тілі (це ок)
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
