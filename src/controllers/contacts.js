@@ -22,20 +22,14 @@ async function getContactsController(req, res) {
     sortOrder,
     filter,
   });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts',
-    data: {
-      data: [contacts],
-      page: 2,
-      perPage: 4,
-      totalItems: 6,
-      totalPages: 2,
-      hasPreviousPage: true,
-      hasNextPage: false,
-    },
+    data: contacts, // ✅ немає зайвого data: [data]
   });
 }
+
 
 async function getContactByIdController(req, res) {
   const contactId = req.params.id;
