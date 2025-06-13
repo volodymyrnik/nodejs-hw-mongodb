@@ -6,88 +6,90 @@ import {
   updateContact,
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-// Отримати всі контакти
-export async function getContactsController(req, res, next) {
-  try {
-    const contacts = await allContacts();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts',
-      data: contacts,
-    });
-  } catch (error) {
-    next(error);
-  }
+async function getContactsController(req, res) {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+
+  const contacts = await allContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully found contacts',
+    data: {
+      data: [contacts],
+      page: 2,
+      perPage: 4,
+      totalItems: 6,
+      totalPages: 2,
+      hasPreviousPage: true,
+      hasNextPage: false,
+    },
+  });
 }
 
-// Отримати контакт за ID
-export async function getContactByIdController(req, res, next) {
-  try {
-    const contactId = req.params.id;
-    const contact = await contactById(contactId);
+async function getContactByIdController(req, res) {
+  const contactId = req.params.id;
+  const contact = await contactById(contactId);
 
-    if (!contact) {
-      throw createHttpError(404, 'Contact not found');
-    }
-
-    res.status(200).json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-  } catch (error) {
-    next(error);
+  if (contact === null) {
+    throw createHttpError(404, 'Contact not found');
   }
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
 }
 
-// Створити контакт
-export async function createContactController(req, res, next) {
-  try {
-    const contact = await createContact(req.body);
+async function createContactController(req, res) {
+  const contact = await createContact(req.body);
 
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a contact!',
-      data: contact,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: contact,
+  });
 }
 
-// Оновити контакт (PATCH)
-export async function updateContactController(req, res, next) {
-  try {
-    const contactId = req.params.id;
-    const result = await updateContact(contactId, req.body);
-
-    if (!result) {
-      throw createHttpError(404, 'Contact not found');
-    }
-
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully patched a contact!',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
+async function updateContactController(req, res) {
+  const contactId = req.params.id;
+  const result = await updateContact(contactId, req.body);
+  if (result === null) {
+    throw createHttpError(404, 'Contact not found');
   }
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result,
+  });
 }
 
-// Видалити контакт
-export async function deleteContactController(req, res, next) {
-  try {
-    const contactId = req.params.id;
-    const result = await deleteContact(contactId);
+async function deleteContactController(req, res) {
+  const contactId = req.params.id;
+  const result = await deleteContact(contactId);
 
-    if (!result) {
-      throw createHttpError(404, 'Contact not found');
-    }
-
-    res.status(204).end();
-  } catch (error) {
-    next(error);
+  if (result === null) {
+    throw createHttpError(404, 'Contact not found');
   }
+
+  res.status(204).end();
 }
+
+export {
+  getContactsController,
+  getContactByIdController,
+  deleteContactController,
+  createContactController,
+  updateContactController,
+};
