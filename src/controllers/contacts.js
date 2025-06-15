@@ -21,21 +21,29 @@ async function getContactsController(req, res) {
     sortBy,
     sortOrder,
     filter,
+    userId: req.user.id, // ✅ обмеження по користувачу
   });
 
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts',
-    data: contacts, // ✅ немає зайвого data: [data]
+    data: {
+      data: contacts.contacts,
+      page: contacts.page,
+      perPage: contacts.perPage,
+      totalItems: contacts.totalItems,
+      totalPages: contacts.totalPages,
+      hasPreviousPage: contacts.hasPreviousPage,
+      hasNextPage: contacts.hasNextPage,
+    },
   });
 }
 
-
 async function getContactByIdController(req, res) {
   const contactId = req.params.id;
-  const contact = await contactById(contactId);
+  const contact = await contactById(contactId, req.user.id); // ✅ перевірка власника
 
-  if (contact === null) {
+  if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
 
@@ -47,7 +55,10 @@ async function getContactByIdController(req, res) {
 }
 
 async function createContactController(req, res) {
-  const contact = await createContact(req.body);
+  const contact = await createContact({
+    ...req.body,
+    userId: req.user.id, // ✅ зв’язок контакту з користувачем
+  });
 
   res.status(201).json({
     status: 201,
@@ -58,10 +69,12 @@ async function createContactController(req, res) {
 
 async function updateContactController(req, res) {
   const contactId = req.params.id;
-  const result = await updateContact(contactId, req.body);
-  if (result === null) {
+  const result = await updateContact(contactId, req.body, req.user.id); // ✅ зміни лише свого контакту
+
+  if (!result) {
     throw createHttpError(404, 'Contact not found');
   }
+
   res.status(200).json({
     status: 200,
     message: 'Successfully patched a contact!',
@@ -71,9 +84,9 @@ async function updateContactController(req, res) {
 
 async function deleteContactController(req, res) {
   const contactId = req.params.id;
-  const result = await deleteContact(contactId);
+  const result = await deleteContact(contactId, req.user.id); // ✅ видалення тільки свого контакту
 
-  if (result === null) {
+  if (!result) {
     throw createHttpError(404, 'Contact not found');
   }
 
