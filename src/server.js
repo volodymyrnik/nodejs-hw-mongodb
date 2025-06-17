@@ -19,6 +19,9 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
 
+  // ✅ Додай ось цей рядок для обробки JSON-тела
+  app.use(express.json());
+
   app.use(
     pino({
       transport: {
@@ -27,7 +30,7 @@ export const setupServer = () => {
     })
   );
 
-  // Додаємо авторизацію
+  // ✅ Роути
   app.use('/auth', authRouter);
   app.use('/contacts', authenticate, contactRouter);
 
