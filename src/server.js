@@ -19,7 +19,6 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
 
-  // ✅ Додай ось цей рядок для обробки JSON-тела
   app.use(express.json());
 
   app.use(
