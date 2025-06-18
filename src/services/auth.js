@@ -48,24 +48,24 @@ export const logoutUser = async (sessionId, refreshToken) => {
 export const refreshSession = async (sessionId, refreshToken) => {
   const session = await Session.findOne({ _id: sessionId });
 
-  if (session === null) {
-    throw createHttpError(401, 'Session not found');
-  }
-
-  if (session.refreshToken !== refreshToken) {
+  if (session === null) throw createHttpError(401, 'Session not found');
+  if (session.refreshToken !== refreshToken)
     throw createHttpError(401, 'Refresh token is invalid');
-  }
-
-  if (session.refreshTokenValidUntil < new Date()) {
+  if (session.refreshTokenValidUntil < new Date())
     throw createHttpError(401, 'Refresh token is expired');
-  }
 
+  // 1️⃣ Створюємо нові токени
+  const newAccessToken  = crypto.randomBytes(30).toString('base64');
+  const newRefreshToken = crypto.randomBytes(30).toString('base64');
+
+  // 2️⃣ Видаляємо стару сесію
   await Session.deleteOne({ _id: session._id });
 
+  // 3️⃣ Створюємо нову з тим самим userId
   return Session.create({
-    userId: session._id,
-    accessToken: crypto.randomBytes(30).toString('base64'),
-    refreshToken: crypto.randomBytes(30).toString('base64'),
+    userId: session.userId,                     // ✅ правильний id користувача
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + fifteen_minutes),
     refreshTokenValidUntil: new Date(Date.now() + one_month),
   });
