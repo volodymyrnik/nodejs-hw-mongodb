@@ -10,6 +10,8 @@ import contactRouter from './routers/contacts.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { authenticate } from './middlewares/authenticate.js';
+import path from 'node:path';
+
 
 const PORT = Number(process.env.PORT || 3000);
 
@@ -17,6 +19,7 @@ export const setupServer = () => {
   const app = express();
 
   app.use(cors());
+  app.use('/photos', express.static(path.resolve('uploads', 'photos')));
   app.use(cookieParser());
 
   app.use(express.json());

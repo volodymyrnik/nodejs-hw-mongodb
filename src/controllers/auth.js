@@ -3,7 +3,13 @@ import {
   loginUser,
   logoutUser,
   refreshSession,
+  sendResetEmail,
+  resetPwd,
 } from '../services/auth.js';
+
+import createHttpError from 'http-errors';
+
+
 
 /* ───────────  REGISTER  ─────────── */
 export async function registerController(req, res) {
@@ -84,5 +90,34 @@ export async function refreshController(req, res) {
     status: 200,
     message: 'Successfully refreshed a session!',
     data: { accessToken: session.accessToken },
+  });
+}
+export async function sendResetEmailController(req, res) {
+  const { email } = req.body;
+
+  try {
+    await sendResetEmail(email);
+  } catch {
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',Add commentMore actions
+    );
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'Reset password email has been successfully sent.',
+    data: {},
+  });
+}
+
+export async function resetPasswordController(req, res) {
+  const { password, token } = req.body;
+  await resetPwd(password, token);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Password has been successfully reset.',
+    data: {},
   });
 }
