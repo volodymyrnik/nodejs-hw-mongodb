@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { validateBody } from '../middlewares/validateBody.js';
-import {Add commentMore actions
+import {
   registerSchema,
   loginSchema,
   sendResetEmailSchema,
