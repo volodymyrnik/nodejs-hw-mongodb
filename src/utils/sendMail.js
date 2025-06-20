@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';Add commentMore actions
+import nodemailer from 'nodemailer';
 import { getEnvVar } from '../utils/getEnvVar.js';
 
 const transport = nodemailer.createTransport({

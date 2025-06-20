@@ -1,4 +1,4 @@
-import * as fs from 'node:fs/promises';Add commentMore actions
+import * as fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {
@@ -60,7 +60,7 @@ async function getContactByIdController(req, res) {
 }
 
 async function createContactController(req, res) {
-let photo = null;Add commentMore actions
+let photo = null;
 
   if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
     const result = await uploadToCloudinary(req.file.path);

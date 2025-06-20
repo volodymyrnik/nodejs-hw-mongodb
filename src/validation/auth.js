@@ -12,7 +12,7 @@ export const loginSchema = Joi.object({
 });
 
 
-export const sendResetEmailSchema = Joi.object({Add commentMore actions
+export const sendResetEmailSchema = Joi.object({
   email: Joi.string().email().required(),
 });
 

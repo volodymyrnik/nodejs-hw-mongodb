@@ -100,7 +100,7 @@ export async function sendResetEmailController(req, res) {
   } catch {
     throw createHttpError(
       500,
-      'Failed to send the email, please try again later.',Add commentMore actions
+      'Failed to send the email, please try again later.',
     );
   }
 
