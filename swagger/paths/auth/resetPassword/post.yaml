@@ -1,0 +1,49 @@
+tags:
+  - Auth
+summary: Reset password
+operationId: resetPassword
+description: Create a new password
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - password
+          - accessToken
+        properties:
+          password:
+            type: string
+            description: Contact's password
+            format: password
+            example: 1234567
+          accessToken:
+            type: string
+            description: Token from login response
+            example: DIOZoLk09iCOUY7F4turCTcitFhZmtETECK8j3rC
+responses:
+  '200':
+    description: Reset password
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Password has been successfully reset.
+            data:
+              $ref: '../../../components/schemas/resetPassword.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
